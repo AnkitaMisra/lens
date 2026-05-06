@@ -1,0 +1,27 @@
+# Core
+anthropic>=0.40.0
+click>=8.1.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# Web UI
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+httpx>=0.27.0
+python-multipart>=0.0.9
+
+# Database
+sqlite-utils>=3.35.0
+
+# Logging
+structlog>=24.0.0
+
+# MCP
+mcp>=1.0.0
+
+# Dev dependencies
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+pytest-mock>=3.12.0
+black>=24.0.0
+ruff>=0.3.0

@@ -1,0 +1,53 @@
+{
+  "name": "Lens — AI Research Workspace",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11-bullseye",
+
+  // Install dependencies after container starts
+  "postCreateCommand": "pip install -r requirements.txt && pip install -e . && echo '✅ Lens dev environment ready'",
+
+  // Forward the web UI port
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "Lens Web UI",
+      "onAutoForward": "openBrowser"
+    }
+  },
+
+  // VS Code extensions installed automatically
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "charliermarsh.ruff",
+        "tamasfe.even-better-toml",
+        "humao.rest-client",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-sqlite"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.black-formatter"
+        },
+        "python.linting.enabled": true,
+        "python.linting.ruffEnabled": true,
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+
+  // Environment variables available in the container
+  // Add your ANTHROPIC_API_KEY to GitHub Codespace secrets:
+  // github.com/settings/codespaces → New secret → ANTHROPIC_API_KEY
+  "remoteEnv": {
+    "ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}"
+  },
+
+  // Run as non-root user
+  "remoteUser": "vscode"
+}
