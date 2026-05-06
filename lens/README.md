@@ -35,6 +35,76 @@ Lens fixes this.
 
 ---
 
+## Prerequisites
+
+Before using Lens you need:
+
+**1. An Anthropic API key (required)**
+
+Lens calls the Claude API to power its research agents. You need your own API key:
+
+1. Go to **[console.anthropic.com](https://console.anthropic.com)**
+2. Sign in or create a free account
+3. Click **API Keys** → **Create Key**
+4. Copy your key — you only see it once
+
+New accounts get **$5 free credits** — enough for 25–50 research sessions.
+
+Add it to your `.env` file:
+```bash
+cp .env.example .env
+# Edit .env and set ANTHROPIC_API_KEY=your_key_here
+```
+
+Or export it in your terminal:
+```bash
+export ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
+```
+
+**2. Python 3.11+**
+```bash
+python3 --version  # must be 3.11 or higher
+```
+
+Install via Homebrew on Mac: `brew install python@3.11`
+
+**3. Optional — Search API key for web search**
+
+Lens uses the Brave Search API for web research. Without it, the search agent returns a placeholder. Add to `.env`:
+```bash
+SEARCH_API_KEY=your_brave_search_key
+```
+
+Get a free key at **[brave.com/search/api](https://brave.com/search/api)** — free tier includes 2,000 queries/month.
+
+---
+
+## Quick start
+
+```bash
+# Clone
+git clone https://github.com/AnkitaMisra/lens
+cd lens
+
+# Install
+python3 -m venv .venv
+source .venv/bin/activate  # Mac/Linux
+pip install -r requirements.txt
+pip install -e .
+
+# Configure
+cp .env.example .env
+# Edit .env — add your ANTHROPIC_API_KEY
+
+# Create data directory
+mkdir -p data
+
+# Run your first research session
+lens research "what is model context protocol"
+```
+
+---
+
 ## How it works
 
 Lens uses a multi-agent architecture where specialist agents work in parallel:
@@ -68,6 +138,30 @@ Every finding is tagged with its source. Every session continues from the last. 
 
 ---
 
+## CLI commands
+
+```bash
+# Research a topic
+lens research "impact of LLMs on software engineering"
+
+# Research within a specific project
+lens research "AI safety approaches" --project your-project-id
+
+# Resume an interrupted session
+lens research "climate tech" --resume your-session-id
+
+# Save report to a file
+lens research "quantum computing" --output report.md
+
+# List all sessions
+lens sessions
+
+# Create a new project
+lens new "My Research Project"
+```
+
+---
+
 ## Features
 
 - **Persistent workspaces** — projects save every source, finding, and decision
@@ -75,8 +169,8 @@ Every finding is tagged with its source. Every session continues from the last. 
 - **Session continuity** — resume any project exactly where you left off
 - **Structured output** — reports, not transcripts. Shareable with anyone
 - **Source provenance** — every claim traces back to its source
-- **Web UI** — clean interface for non-technical users
 - **CLI** — full terminal access for developers
+- **Web UI** — coming in Phase 2
 - **MCP integration** — connect your own tools and data sources
 
 ---
@@ -93,28 +187,15 @@ Every finding is tagged with its source. Every session continues from the last. 
 
 ---
 
-## Quick start
+## Why not just use Claude?
 
-```bash
-# Clone
-git clone https://github.com/yourusername/lens
-cd lens
+Claude is exceptional at answering questions. Lens is built for something different — accumulating and organising work over time.
 
-# Install
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+**Use Claude when:** you need a quick answer, a one-off summary, or help with a single task.
 
-# Configure
-cp .env.example .env
-# Add your ANTHROPIC_API_KEY to .env
+**Use Lens when:** you're doing multi-session research, processing more sources than one context window can hold, or need output you can share and build on.
 
-# Run
-python -m lens.cli start
-
-# Or web UI
-uvicorn lens.web.app:app --reload
-# Open http://localhost:8000
-```
+They complement each other. Lens uses Claude under the hood.
 
 ---
 
@@ -129,7 +210,7 @@ Lens is built on production-grade patterns from the Claude Agent SDK:
 | Session state | `lens/session_store.py` | SQLite persistence, resumption |
 | MCP server | `lens/mcp_server.py` | Custom tools for workspace access |
 | Schemas | `lens/schemas.py` | Pydantic validation, retry loops |
-| Web UI | `lens/web/` | FastAPI + HTMX |
+| CLI | `lens/cli.py` | Click CLI entry point |
 
 Every architectural decision is documented in [`docs/architecture.md`](docs/architecture.md).
 
@@ -137,59 +218,48 @@ Every architectural decision is documented in [`docs/architecture.md`](docs/arch
 
 ## Roadmap
 
-**Phase 1 — Core pipeline** *(in progress)*
-- [ ] Coordinator + 4 specialist agents
-- [ ] Session state with SQLite persistence
-- [ ] Basic CLI interface
-- [ ] Markdown report output
+**Phase 1 — Core pipeline** ✅ *complete*
+- [x] Coordinator + 4 specialist agents
+- [x] Session state with SQLite persistence
+- [x] CLI interface
+- [x] Markdown report output
+- [x] MCP server with 6 workspace tools
 
-**Phase 2 — Web UI**
+**Phase 2 — Web UI** *(in progress)*
 - [ ] FastAPI backend
 - [ ] Project workspace UI
 - [ ] Source upload (PDF, URL, text)
 - [ ] Report viewer and export
 
-**Phase 3 — MCP + integrations**
-- [ ] Custom MCP server
+**Phase 3 — Integrations**
+- [ ] Google Drive MCP
 - [ ] Notion export
-- [ ] Obsidian export
-- [ ] Google Drive integration
+- [ ] Obsidian vault sync
 
 **Phase 4 — Collaboration**
 - [ ] Shared workspaces
 - [ ] Team annotations
-- [ ] Comment and review flow
-
----
-
-## Why not just use Claude?
-
-Claude is exceptional at answering questions. Lens is built for something different — accumulating and organising work over time.
-
-**Use Claude when:** you need a quick answer, a one-off summary, or help with a single task.
-
-**Use Lens when:** you're doing multi-session research, processing more sources than one context window can hold, or need output you can share and build on.
-
-They complement each other. Lens uses Claude under the hood.
+- [ ] Review and approval flow
 
 ---
 
 ## Contributing
 
-Lens is early and moving fast. If you want to contribute:
+Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions.
 
-1. Check open issues for good first tasks
-2. Read [`docs/architecture.md`](docs/architecture.md) to understand the system
-3. Open a PR — all contributions welcome
+Quickest way to start — open a GitHub Codespace:
+1. Fork the repo
+2. Click **Code → Codespaces → Create codespace on main**
+3. Add your `ANTHROPIC_API_KEY` at `github.com/settings/codespaces`
+4. You're ready — no local setup needed
 
 ---
 
 ## Stack
 
 - **Python 3.11+**
-- **Anthropic Claude Agent SDK**
-- **FastAPI** — web backend
-- **HTMX** — lightweight frontend
+- **Anthropic Claude API** — powers all research agents
+- **FastAPI** — web backend (Phase 2)
 - **SQLite** — session and workspace persistence
 - **Pydantic** — schema validation
 - **Click** — CLI
@@ -203,4 +273,4 @@ MIT — free to use, modify, and distribute.
 
 ---
 
-*Built in public. Follow the journey on [LinkedIn](https://linkedin.com/in/yourprofile).*
+*Built in public. Follow the journey on [LinkedIn](https://linkedin.com/in/ankitamisra).*

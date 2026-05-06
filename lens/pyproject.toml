@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools>=68.0"]
-build-backend = "setuptools.backends.legacy:build"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "lens"
@@ -21,6 +21,7 @@ dependencies = [
     "sqlite-utils>=3.35.0",
     "structlog>=24.0.0",
     "mcp>=1.0.0",
+    "python-dotenv>=1.0.0",
 ]
 
 [project.scripts]

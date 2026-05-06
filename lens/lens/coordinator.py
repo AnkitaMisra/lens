@@ -26,11 +26,7 @@ from lens.agents.document_agent import DocumentAgent
 from lens.agents.analyser_agent import AnalyserAgent
 from lens.agents.writer_agent import WriterAgent
 from lens.schemas import (
-    ResearchGoal,
-    AgentResult,
-    Finding,
     ProvenanceEnvelope,
-    SessionCheckpoint,
     CoordinatorError,
 )
 from lens.session_store import SessionStore

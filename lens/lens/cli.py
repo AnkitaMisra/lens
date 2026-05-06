@@ -13,9 +13,12 @@ from pathlib import Path
 
 import click
 import structlog
+from dotenv import load_dotenv
 
 from lens.coordinator import Coordinator
 from lens.session_store import SessionStore
+
+load_dotenv()
 
 # Configure structured logging
 structlog.configure(
